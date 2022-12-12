@@ -7,7 +7,7 @@ This repo contains the tool zync. It allows you to automatically update your for
  - Run zync with the following options
 
  ## Options
- - \-a will run zync on every subfolder from where it is
+ - \-a \<folder\> will run on the subfolders
  - \-f \<folder\> will run zync on that folder
  - \-s \<account-name\> set github account to sync from
  - help will display with anything else

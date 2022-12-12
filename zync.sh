@@ -1,14 +1,15 @@
 #!/bin/bash
 
-source .zyncconfig
-home=$(pwd)
-logPath="$(pwd)/.zynclog"
+home=$(dirname -- "${BASH_SOURCE[0]}")
+source $home\/.zyncconfig
+logPath="$home/.zynclog"
 folders=""
 help=true
+setAll=false
 while getopts af:s: flag
 do
 	case "${flag}" in
-		a) folders=*
+		a) setAll=true
 			help=false;;
 		f) folders=${OPTARG} 
 			help=false;;
@@ -18,17 +19,26 @@ do
 	esac
 done
 
+if [ "$setAll" = true ]; then
+	folders="$folders/*"
+fi
+
 if [ "$help" = true ]; then
 	echo "zync v1.0 by Zac"
 	echo "a tool to sync your forks main (warning, will hard reset)"
-	echo "-a run on all subfolders"
-	echo "-f run on a select folder"
+	echo "-a <folder> run on all subfolders"
+	echo "-f <folder> run on a select folder"
 	echo "-s run to set github account"
 	exit
 fi
 
 if [ "$setEnv" = true ]; then
-	echo "ZYNC_ACCOUNT=$ZYNC_ACCOUNT" > .zyncconfig
+	echo "ZYNC_ACCOUNT=$ZYNC_ACCOUNT" > $home\/.zyncconfig
+fi
+
+if [ -z "$ZYNC_ACCOUNT" ]; then
+	echo "git account for upstream repo must be set"
+	exit
 fi
 
 if [ "$folders" = "" ]; then
@@ -55,7 +65,6 @@ do
 		if [[ "$dummy" =~ "fatal" ]];
 			then 
 				cd $home
-				dummy+=$(git rebase --abort)
 				echo "$dummy" > "$logPath"
 				echo "problems encountered, please check .zynclog"
 				exit
