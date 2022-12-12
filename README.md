@@ -2,7 +2,7 @@
 This repo contains the tool zync. It allows you to automatically update your forked repos (main branch only).
 
 ## Getting started
- - Download `zync.sh` or `git clone git@github.com:zacdurber-vgw/zync.git`
+ - Download `zync.sh` or `git clone git@github.com:gitaccount/zync.git`
  - Set github account that owns the repository `zsync -s <account-name>`
  - Run zync with the following options
 
