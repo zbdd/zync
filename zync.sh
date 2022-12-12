@@ -69,7 +69,7 @@ do
 			then 
 				cd $startDir
 				echo "$dummy" > "$logPath"
-				echo "problems encountered, please check .zynclog"
+				echo "$i: problems encountered, please check .zynclog"
 				exit
 		else 
 			echo "$i: $rebaseLog"
