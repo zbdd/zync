@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#version 1.1
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd 2>&1)
 source $home\/.zyncconfig
@@ -51,12 +52,13 @@ do
 	if [ -d "$i" ]; then
 		cd "$i"
 		i=$(echo $i | sed "s/.*\///")
-		echo "syncing github repo: $i"
 		dummy=$(git checkout main 2>&1 )
+		if [[ "$dummy" =~ "not a git repository" ]]; then
+			break
+		fi
 		dummy+=$(git reset --hard 2>&1)
 		remote="git@github.com:$ZYNC_ACCOUNT/$i.git"
 	  	dummy+=$(git remote add origin-upstream $remote 2>&1)
-	  	echo "fetching upstream"
 	  	dummy+=$(git fetch origin-upstream  2>&1)
 		dummy+=$(git checkout origin-upstream/main 2>&1)
 		dummy+=$(git checkout main 2>&1)
@@ -70,7 +72,7 @@ do
 				echo "problems encountered, please check .zynclog"
 				exit
 		else 
-			echo "$rebaseLog"
+			echo "$i: $rebaseLog"
 		fi
 		cd $startDir
 	else 
