@@ -1,6 +1,7 @@
 #!/bin/bash
 
 home=$(dirname -- "${BASH_SOURCE[0]}")
+startDir=$(pwd 2>&1)
 source $home\/.zyncconfig
 logPath="$home/.zynclog"
 folders=""
@@ -64,14 +65,14 @@ do
 		dummy+=$(git push 2>&1)
 		if [[ "$dummy" =~ "fatal" ]];
 			then 
-				cd $home
+				cd $startDir
 				echo "$dummy" > "$logPath"
 				echo "problems encountered, please check .zynclog"
 				exit
 		else 
 			echo "$rebaseLog"
 		fi
-		cd $home
+		cd $startDir
 	else 
 		echo "not a valid folder"
 	fi
