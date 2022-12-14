@@ -1,19 +1,22 @@
 #!/bin/bash
 
-#version 1.1
+#version 1.2
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd 2>&1)
 source $home\/.zyncconfig
 logPath="$home/.zynclog"
 folders=""
+isSilent=false
 help=true
 setAll=false
-while getopts af:s: flag
+while getopts afq:s: flag
 do
 	case "${flag}" in
 		a) setAll=true
 			help=false;;
 		f) folders=${OPTARG} 
+			help=false;;
+		q) isSilent=true
 			help=false;;
 		s) setEnv=true
 			help=false
@@ -30,6 +33,7 @@ if [ "$help" = true ]; then
 	echo "a tool to sync your forks main (warning, will hard reset)"
 	echo "-a <folder> run on all subfolders"
 	echo "-f <folder> run on a select folder"
+	echo "-q silent-mode, send all output to logfile" 
 	echo "-s run to set github account"
 	exit
 fi
@@ -69,10 +73,18 @@ do
 			then 
 				cd $startDir
 				echo "$dummy" > "$logPath"
-				echo "$i: problems encountered, please check .zynclog"
+				if [ "$isSilent" = false ]; 
+					then echo "$i: problems encountered, please check .zynclog"
+				else
+					 echo "$i: problems encountered" >> "$logPath"
+				fi
 				exit
 		else 
-			echo "$i: $rebaseLog"
+			if [ "$isSilent" = false ]; 
+				then echo "$i - $rebaseLog"
+			else
+				echo "$i - $rebaseLog" >> "$logPath"
+			fi
 		fi
 		cd $startDir
 	else 
