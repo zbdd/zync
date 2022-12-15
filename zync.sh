@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#version 1.2.1
+version="1.3.1"
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd )
 source $home\/.zyncconfig
@@ -30,7 +30,7 @@ if [ "$setAll" = true ]; then
 fi
 
 if [ "$help" = true ]; then
-	echo "zync v1.2.1 by Zac"
+	echo "zync $version by Zac"
 	echo "a tool to sync your forks main (warning, will hard reset)"
 	echo "-a <folder> run on all subfolders of folder"
 	echo "-f <folder> run on a select folder"
@@ -58,6 +58,7 @@ do
 		cd "$i"
 		i=$(echo $i | sed "s/.*\///")
 		echo "$i git sync started"
+		currentBranch=$(git branch --show-current 2>&1)
 		dummy+=$(git checkout main  )
 		if [[ "$dummy" =~ "not a git repository" ]]; then
 			continue
@@ -77,6 +78,7 @@ do
 		rebaseLog=$(git rebase origin-upstream/main  )
 		dummy+="$rebaseLog"
 		dummy+=$(git push )
+		git checkout "$currentBranch"
 		if [[ "$dummy" =~ "fatal" ]];
 			then 
 				cd $startDir
