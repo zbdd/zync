@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.3.2"
+version="1.3.3"
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd )
 source $home\/.zyncconfig
@@ -66,7 +66,10 @@ do
 		fi
 		dummy+=$(git reset --hard )
 		remote="git@github.com:$ZYNC_ACCOUNT/$i.git"
-	  dummy+=$(git remote add origin-upstream $remote )
+		remoteCheck=$(git remote -v 2>&1)
+		if [[ ! "$remoteCheck" =~ "origin-upstream" ]]; then
+			dummy+=$(git remote add origin-upstream $remote )
+		fi
 	  dummy+=$(git fetch origin-upstream  )
 	  hasChanges=$(git pull origin-upstream main )
 	  if [[ "$hasChanges" =~ "Already up to date" ]];
