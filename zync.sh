@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.3.1"
+version="1.3.2"
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd )
 source $home\/.zyncconfig
@@ -17,6 +17,7 @@ do
 		f) folders=${OPTARG} 
 			help=false;;
 		q) exec 1>>"$logPath" 
+			exec 2>>"$logPath" 
 			help=false;;
 		s) setEnv=true
 			help=false
@@ -73,9 +74,9 @@ do
 	  		continue;
 	  fi
 	  dummy+=$hasChanges
-		dummy+=$(git checkout origin-upstream/main )
+		dummy+=$(git switch -c sync-main origin-upstream/main )
 		dummy+=$(git checkout main )
-		rebaseLog=$(git rebase origin-upstream/main  )
+		rebaseLog=$(git rebase sync-main )
 		dummy+="$rebaseLog"
 		dummy+=$(git push )
 		git checkout "$currentBranch"
