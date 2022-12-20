@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="1.3.3"
+version="1.3.4"
 home=$(dirname -- "${BASH_SOURCE[0]}")
 startDir=$(pwd )
 source $home\/.zyncconfig
@@ -59,9 +59,11 @@ do
 		cd "$i"
 		i=$(echo $i | sed "s/.*\///")
 		echo "$i git sync started"
-		currentBranch=$(git branch --show-current 2>&1)
+		currentBranch=$(git branch --show-current >&1)
+		echo "currently on $currentBranch"
 		dummy+=$(git checkout main  )
 		if [[ "$dummy" =~ "not a git repository" ]]; then
+			cd $startDir
 			continue
 		fi
 		dummy+=$(git reset --hard )
@@ -74,6 +76,8 @@ do
 	  hasChanges=$(git pull origin-upstream main )
 	  if [[ "$hasChanges" =~ "Already up to date" ]];
 	  	then echo "up to date, skipping"
+	  		git checkout $currentBranch
+	  		cd $startDir
 	  		continue;
 	  fi
 	  dummy+=$hasChanges
